@@ -47,6 +47,12 @@ async function registration() {
 
         const data = await res.json();
         alert(data.msg);
+        if (res.status == 200) {
+            nameField.value = "";
+            emailField.value = "";
+            passwordField.value = "";
+            confirmField.value = "";
+        }
     } catch (err) {
         console.log('Valami baj van: ', err)
     }
