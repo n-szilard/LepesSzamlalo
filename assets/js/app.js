@@ -1,6 +1,8 @@
 const AppTitle = 'Lépésszámláló App';
 const Author = '13. A';
 const Company = 'Bajai SZC Türr Istvàn Technikum'
+const ServerUrl = 'http://localhost:3000'
+
 
 let title = document.getElementById('appTitle');
 let company = document.getElementById('company');
@@ -9,11 +11,17 @@ let lightmodeBtn = document.getElementById('lightmodeBtn');
 let darkmodeBtn = document.getElementById('darkmodeBtn');
 
 let main = document.querySelector('main');
+
+let mainMenu = document.getElementById('mainMenu');
+let userMenu = document.getElementById('userMenu');
+
 let theme = 'light';
 
 title.innerHTML = AppTitle;
 company.innerHTML = Company;
 author.innerHTML = Author;
+
+let loggedUser = null;
 
 lightmodeBtn.addEventListener('click', () => {
     setTheme('light');
@@ -55,7 +63,22 @@ let render = async (view) => {
     main.innerHTML = await (await fetch(`views/${view}.html`)).text();
 }
 
-
+function getLoggedUser() {
+    if (sessionStorage.getItem('loggedUser')) {
+        loggedUser = JSON.parse(sessionStorage.getItem('loggedUser'));
+        mainMenu.classList.add('hide');
+        userMenu.classList.remove('hide');
+    } else {
+        mainMenu.classList.remove('hide');
+        userMenu.classList.add('hide');
+    }
+    return loggedUser;
+}
 
 loadTheme();
-render('login');
+
+if (getLoggedUser()) {
+    render('main');
+} else {
+    render('login');
+}

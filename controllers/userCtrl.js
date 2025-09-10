@@ -13,27 +13,27 @@ async function registration() {
 
 
     if (nameField.value == '' || passwordField.value == '' || emailField.value == '' || confirmField.value == '') {
-        alert('Nem adtál meg minden adatot!');
+        showMessage('danger','Hiba','Nem adtál meg minden adatot!');
         return;
     }
 
     if (passwordField.value != confirmField.value) {
-        alert('A két jelszó nem egyezik!');
+        showMessage('danger','Hiba','A két jelszó nem egyezik!');
         return;
     }
 
     if (!passwdRegExp.test(passwordField.value)) {
-        alert('A megadott jelszó nem elég biztonságos!');
+        showMessage('danger','Hiba','A megadott jelszó nem elég biztonságos!');
         return;
     }
 
     if (!emailRegExp.test(emailField.value)) {
-        alert('Nem megfelelő e-mail cím!');
+        showMessage('danger','Hiba','Nem megfelelő e-mail cím!');
         return;
     }
 
     try {
-        const res = await fetch('http://localhost:3000/users', {
+        const res = await fetch(`${ServerUrl}/users`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ async function registration() {
         });
 
         const data = await res.json();
-        alert(data.msg);
+        showMessage('info','Siker', data.msg);
         if (res.status == 200) {
             nameField.value = "";
             emailField.value = "";
@@ -54,13 +54,50 @@ async function registration() {
             confirmField.value = "";
         }
     } catch (err) {
-        console.log('Valami baj van: ', err)
+        showMessage('danger','Hiba', err);
     }
 }
 
-function login(){}
+async function login() {
+    let emailField = document.getElementById('emailField');
+    let passwordField = document.getElementById('passwordField');
+    if (passwordField.value == '' || emailField.value == '') {
+        showMessage('danger','Hiba','Nem adtál meg minden adatot!');
+        return;
+    }
 
-function logout(){}
+    let users = [];
+
+    try {
+        const res = await fetch(`${ServerUrl}/users`);
+        users = await res.json();
+        users.forEach(user => {
+            if (user.email == emailField.value && user.password == passwordField.value) {
+                loggedUser = user;
+                // return;
+            }
+        });
+
+        if (!loggedUser) {
+            showMessage('danger', 'Hiba', 'Hibás belépési adatok!');
+            return;
+        }
+
+        sessionStorage.setItem('loggedUser', JSON.stringify(loggedUser));
+        await render('main');
+        showMessage('success', 'Ok', 'Sikeres bejelentkezés');
+        getLoggedUser();
+    } catch (err) {
+        showMessage('danger','Hiba', err);
+    }
+
+}
+
+function logout() {
+    sessionStorage.removeItem('loggedUser');
+    getLoggedUser();
+    render('login');
+}
 
 function getProfile(){}
 
