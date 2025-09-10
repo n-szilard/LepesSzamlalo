@@ -63,22 +63,20 @@ let render = async (view) => {
     main.innerHTML = await (await fetch(`views/${view}.html`)).text();
 }
 
-function getLoggedUser() {
+async function getLoggedUser() {
     if (sessionStorage.getItem('loggedUser')) {
         loggedUser = JSON.parse(sessionStorage.getItem('loggedUser'));
         mainMenu.classList.add('hide');
         userMenu.classList.remove('hide');
+        await render('main');
     } else {
+        loggedUser = null;
         mainMenu.classList.remove('hide');
         userMenu.classList.add('hide');
+        await render('login');
     }
     return loggedUser;
 }
 
 loadTheme();
-
-if (getLoggedUser()) {
-    render('main');
-} else {
-    render('login');
-}
+getLoggedUser();

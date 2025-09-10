@@ -66,17 +66,25 @@ async function login() {
         return;
     }
 
-    let users = [];
+    let user = {};
 
     try {
-        const res = await fetch(`${ServerUrl}/users`);
-        users = await res.json();
-        users.forEach(user => {
-            if (user.email == emailField.value && user.password == passwordField.value) {
-                loggedUser = user;
-                // return;
-            }
+        const res = await fetch(`${ServerUrl}/users/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: emailField.value,
+                password: passwordField.value
+            })
         });
+
+        user = await res.json();
+
+        if (user.id) {
+            loggedUser = user;
+        }
 
         if (!loggedUser) {
             showMessage('danger', 'Hiba', 'Hibás belépési adatok!');
@@ -84,9 +92,8 @@ async function login() {
         }
 
         sessionStorage.setItem('loggedUser', JSON.stringify(loggedUser));
-        await render('main');
-        showMessage('success', 'Ok', 'Sikeres bejelentkezés');
         getLoggedUser();
+        showMessage('success', 'Ok', 'Sikeres bejelentkezés');
     } catch (err) {
         showMessage('danger','Hiba', err);
     }
@@ -96,7 +103,6 @@ async function login() {
 function logout() {
     sessionStorage.removeItem('loggedUser');
     getLoggedUser();
-    render('login');
 }
 
 function getProfile(){}
