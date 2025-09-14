@@ -16,7 +16,7 @@
             <input type="email" class="form-control" id="emailField">
         </div>
 
-        <button class="btn btn-primary" id="modifyBtn" onclick="">Módosítás</button>
+        <button class="btn btn-primary" id="modifyBtn" onclick="updateProfile()">Módosítás</button>
     </div>
 
     <div class="col-12 col-l-6">
@@ -29,14 +29,16 @@
 
         <div class="mb-3">
             <label for="passwordField" class="form-label">Új jelszó</label>
-            <input type="password" class="form-control" id="passwordField">
+            <input type="password" class="form-control" id="newPasswordField">
         </div>
 
         <div class="mb-3">
             <label for="passwordField" class="form-label">Új jelszó megerősítése</label>
-            <input type="password" class="form-control" id="passwordField">
+            <input type="password" class="form-control" id="newPasswordConfirmField">
         </div>
 
-        <button class="btn btn-primary" id="modifyBtn" onclick="">Módosítás</button>
+        <button class="btn btn-primary" id="modifyPassBtn" onclick="updatePassword()">Módosítás</button>
     </div>
+
+        <button class="btn btn-primary" id="getprofileBtn" onclick="getProfile()">Getprofile</button>
 </div>

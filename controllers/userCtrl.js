@@ -105,8 +105,96 @@ function logout() {
     getLoggedUser();
 }
 
-function getProfile(){}
+function getProfile() {
+    const nameField = document.getElementById('nameField');
+    const emailField = document.getElementById('emailField');
+    nameField.value = loggedUser.name;
+    emailField.value = loggedUser.email;
+}
 
-function updateProfile(){}
 
-function updatePassword(){}
+
+
+async function updateProfile() {
+    let nameField = document.getElementById('nameField');
+    let emailField = document.getElementById('emailField');
+
+    if (nameField.value == '' || emailField.value == '') {
+        showMessage('danger', 'Hiba', 'Nem adtál meg minden adatot!');
+        return;
+    }
+
+    if (!emailRegExp.test(emailField.value)) {
+        showMessage('danger', 'Hiba', 'Nem megfelelő e-mail cím!');
+        return;
+    }
+
+    try {
+        const res = await fetch(`${ServerUrl}/users/profile`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: loggedUser.id,
+                email: emailField.value,
+                name: nameField.value
+            })
+        });
+
+        const data = await res.json();
+        showMessage('info', 'Siker', data.msg);
+        if (res.status == 200) {
+            nameField.value = "";
+            emailField.value = "";
+        }
+    } catch (err) {
+        showMessage('danger', 'Hiba', err);
+    }
+}
+
+async function updatePassword() {
+    console.log('updatePassword');
+    let currentPasswordField = document.getElementById('passwordField');
+    let newPasswordField = document.getElementById('newPasswordField');
+    let confirmPasswordField = document.getElementById('newPasswordConfirmField');
+
+    if (currentPasswordField.value == '' || newPasswordField.value == '' || confirmPasswordField.value == '') {
+        showMessage('danger', 'Hiba', 'Nem adtál meg minden adatot!');
+        return;
+    }
+
+    if (newPasswordField.value != confirmPasswordField.value) {
+        showMessage('danger', 'Hiba', 'A két jelszó nem egyezik!');
+        return;
+    }
+
+    if (!passwdRegExp.test(newPasswordField.value)) {
+        showMessage('danger', 'Hiba', 'A megadott jelszó nem elég biztonságos!');
+        return;
+    }
+
+    try {
+        const res = await fetch(`${ServerUrl}/users/passmod`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: loggedUser.id,
+                oldPassword: currentPasswordField.value,
+                newPassword: newPasswordField.value
+            })
+        });
+
+        const data = await res.json();
+        showMessage('info', 'Siker', data.msg);
+        if (res.status == 200) {
+            currentPasswordField.value = "";
+            newPasswordField.value = "";
+            confirmPasswordField.value = "";
+        }
+    } catch (err) {
+        showMessage('danger', 'Hiba', err);
+    }
+}
