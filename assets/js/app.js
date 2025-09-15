@@ -66,6 +66,9 @@ let render = async (view) => {
         case "profile":
             getProfile();
             break;
+        case "main":
+            setDate();
+            break;
     }
 }
 
