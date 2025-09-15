@@ -61,6 +61,12 @@ setThemeBtn = (theme) => {
 
 let render = async (view) => {
     main.innerHTML = await (await fetch(`views/${view}.html`)).text();
+
+    switch (view) {
+        case "profile":
+            getProfile();
+            break;
+    }
 }
 
 async function getLoggedUser() {

@@ -105,11 +105,20 @@ function logout() {
     getLoggedUser();
 }
 
-function getProfile() {
+async function getProfile() {
     const nameField = document.getElementById('nameField');
     const emailField = document.getElementById('emailField');
-    nameField.value = loggedUser.name;
-    emailField.value = loggedUser.email;
+
+    try {
+        const res = await fetch(`${ServerUrl}/users/${loggedUser.id}`);
+        const user = await res.json();
+        console.log(user)
+        nameField.value = user.name;
+        emailField.value = user.email;
+    } catch (error) {
+        showMessage('danger','Hiba', err);
+    }
+
 }
 
 
@@ -151,6 +160,8 @@ async function updateProfile() {
     } catch (err) {
         showMessage('danger', 'Hiba', err);
     }
+
+    getLoggedUser();
 }
 
 async function updatePassword() {
