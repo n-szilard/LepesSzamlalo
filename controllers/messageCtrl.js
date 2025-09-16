@@ -4,7 +4,7 @@ function showMessage(severity, title, message) {
     let h3 = document.createElement('h3');
     let p = document.createElement('p');
     let btn = document.createElement('button');
-
+    messageBox.classList.remove('hide');
     h3.innerHTML = title;
     p.innerHTML = message;
     p.classList.add('m-0', 'p-0')

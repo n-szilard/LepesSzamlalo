@@ -68,6 +68,8 @@ let render = async (view) => {
             break;
         case "main":
             setDate();
+            await getSteps();
+            renderSteps();
             break;
     }
 }

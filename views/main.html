@@ -16,17 +16,17 @@
     </div>
     
     <div class="mb-3 col-12 col-lg-4">
-        <button class="btn btn-primary mb-3" id="addBtn" onclick="">Hozzáadás</button>
+        <button class="btn btn-primary mb-3" id="addBtn" onclick="add()">Hozzáadás</button>
         <button class="btn btn-warning mb-3 hide" id="updateBtn" onclick="">Módosítás</button>
         <button class="btn btn-danger mb-3 hide" id="delBtn" onclick="">Törlés</button>
-        <button class="btn btn-secondary mb-3 hide" id="cancelBtn" onclick="">Mégsem</button>
+        <button class="btn btn-secondary mb-3 hide" id="cancelBtn" onclick="cancel()">Mégsem</button>
 
     </div>
 
 </div>
 <!-- táblázat -->
 
-<table class="table">
+<table class="table table-hover table-striped">
     <thead>
         <tr>
             <th class="text-center">#</th>
@@ -41,7 +41,7 @@
     <tfoot>
         <tr>
             <td colspan="4" class="text-center">
-                Összesen: <span id="stepSumSpan">0</span> lépés.
+                Összesen: <strong><span id="stepSumSpan" class="text-info">0</span></strong> lépés.
             </td>
         </tr>
     </tfoot>
