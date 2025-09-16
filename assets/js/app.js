@@ -71,6 +71,10 @@ let render = async (view) => {
             await getSteps();
             renderSteps();
             break;
+        case "statistics":
+            await getChartData();
+            initChart();
+            break;
     }
 }
 
