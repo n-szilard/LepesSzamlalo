@@ -1,6 +1,6 @@
 let steps = []
 let editMode = false;
-
+let selectedStep = null;
 
 function setDate() {
     let today = new Date().toISOString().split('T')[0];
@@ -132,14 +132,132 @@ function renderSteps() {
     sumSpan.innerHTML = sum;
 }
 
+async function update() {
+    /*
+        Ha a dátum nem változott -> lépésszám frissítése a selectedStep-re
+        Ha a dátum változott -> eredeti törlése majd
+            ha még nincs ilyen dátum -> insert új adatokkal
+            ha van ilyen dátum -> frissítés az új lépésszámra
+    */
+
+    let date = document.getElementById("dateField");
+    let stepcount = document.getElementById("stepCountField");
+
+    if (selectedStep.date == date.value) {
+        try {
+            let res = await fetch(`${ServerUrl}/steps/${selectedStep.id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    newDate: date.value,
+                    newCount: Number(stepcount.value)
+                })
+            });
+            let data = await res.json();
+            if (res.status == 200) {
+                showMessage('success', 'Ok', data.msg);
+                await getSteps();
+                renderSteps();
+            } else {
+                showMessage('danger', 'Hiba', data.msg);
+            }
+        } catch (err) {
+            console.log(err);
+            showMessage('danger', 'Hiba', 'Hiba az adatok lekérdezése során');
+        }
+    } else {
+        try {
+            let res = await fetch(`${ServerUrl}/steps/${selectedStep.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            let data = await res.json();
+            if (res.status == 200) {
+                //showMessage('success', 'Ok', data.msg);
+                //await getSteps();
+                //cancel();
+                //renderSteps();
+            } else {
+                showMessage('danger', 'Hiba', data.msg);
+            }
+        } catch (err) {
+            console.log(err);
+            showMessage('danger', 'Hiba', 'Hiba az adatok törlése során');
+        }
+
+        let idx = steps.findIndex(step => step.date == date && step.uid == loggedUser.id);
+        if (idx == -1) {
+            // ha nincs akkor insert
+            try {
+                let res = await fetch(`${ServerUrl}/steps/upload/${loggedUser.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        date: date.value,
+                        count: Number(stepcount.value)
+                    })
+                });
+                let data = await res.json();
+                if (res.status == 200) {
+                    showMessage('success', 'Ok', data.msg);
+                    await getSteps();
+                    cancel();
+                    renderSteps();
+                } else {
+                    showMessage('danger', 'Hiba', data.msg);
+                }
+            } catch (err) {
+                console.log(err);
+                showMessage('danger', 'Hiba', 'Hiba az adatok lekérdezése során');
+            }
+        } else {
+            // ha van akkor update
+            try {
+                let res = await fetch(`${ServerUrl}/steps/${steps[idx].id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        newDate: date.value,
+                        newCount: Number(stepcount.value)
+                    })
+                });
+                let data = await res.json();
+                if (res.status == 200) {
+                    showMessage('success', 'Ok', data.msg);
+                    await getSteps();
+                    renderSteps();
+                } else {
+                    showMessage('danger', 'Hiba', data.msg);
+                }
+            } catch (err) {
+                console.log(err);
+                showMessage('danger', 'Hiba', 'Hiba az adatok lekérdezése során');
+            }
+        }
+    }
+}
+
+async function del() {
+    let idx = steps.findIndex(step => step.id == selectedStep.id)
+    await deleteStep(idx);
+}
+
 function editStep(index) {
     let date = document.getElementById("dateField");
     let stepcount = document.getElementById("stepCountField");
 
     toggleMode(true);
-    console.log(index);
     date.value = steps[index].date;
     stepcount.value = steps[index].count
+    selectedStep = steps[index];
 }
 
 async function deleteStep(index) {
