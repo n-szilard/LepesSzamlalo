@@ -50,6 +50,9 @@
                             <a class="nav-link" href="#" onclick="render('profile')">Profilom</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="render('calendar')">Naptár</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="#" onclick="logout()">Kilépés</a>
                         </li>
                     </ul>
@@ -64,8 +67,11 @@
             <p id="author"></p>
         </footer>
     </div>
+
+    <!-- Assets -->
     <script src="./assets/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js'></script>
     <script src="./assets/js/app.js"></script>
 
     <!-- Controllers -->
@@ -73,6 +79,7 @@
     <script src="./controllers/userCtrl.js"></script>
     <script src="./controllers/stepCtrl.js"></script>
     <script src="./controllers/chartCtrl.js"></script>
+    <script src="./controllers/calendarCtrl.js"></script>
 </body>
 
 </html>

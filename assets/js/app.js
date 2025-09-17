@@ -75,6 +75,10 @@ let render = async (view) => {
             await getChartData();
             initChart();
             break;
+        case "calendar":
+            await getCalendarData();
+            initCalendar();
+            break;
     }
 }
 
